@@ -1,0 +1,11 @@
+{
+    "verbose": true,
+    "watch": [
+      "backend"
+    ],
+    "ignore": [
+      "./**/*.test.ts"
+    ],
+    "exec": "node -r esbuild-register backend/server.ts",
+    "ext": "ts,mjs,js,json,graphql"
+}
