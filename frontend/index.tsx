@@ -1,13 +1,29 @@
-import 'index.sass';
+import './init';
+import './index.sass';
 
-console.log('it works');
-document.body.innerHTML = 'Talking with server...'
+const root = document.getElementById('root') as HTMLElement;
+root.innerHTML = 'Looking for server...'
 
-fetch('http://localhost:4000/', { mode: 'cors' }).then(async (res) => {
-    const x = await res.json();
+console.log('environment:', env)
+async function data() {
+    try {
+        const ac = new AbortController();
+        setTimeout(() => ac.abort(), 5000);
 
-    document.body.innerHTML = `
+        const res = await fetch('http://localhost:4000/', { mode: 'cors', signal: ac.signal });
+        return await res.json();
+    } catch {
+        return null;
+    }
+}
+
+async function run() {
+    const x = await data();
+
+    root.innerHTML = `
         <h1>Frontend: IT WORKS!</h1>
         <h2>Backend: ${x === 'it works' ? x : '?'}</h2>
     `;
-});
+}
+
+run();

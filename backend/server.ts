@@ -12,7 +12,7 @@ app.get('/', (req, res) => {
 
 test();
 
-interval((i) => console.log(i + 1), 1500, 5);
+interval((i) => console.log(i + 1), 1500, 3);
 
 app.listen(4000, () => {
     console.log("Listening");
