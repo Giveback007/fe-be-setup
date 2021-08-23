@@ -9,6 +9,12 @@ const sassPlugin = require('esbuild-plugin-sass');
 
 const { log } = console;
 
+const copyFile = (file, fromDir, toDir) => fs.copyFile(
+    path.join(fromDir, file),
+    path.join(toDir, file),
+    (err) => { if (err) throw err; },
+);
+
 let isBuilding = false;
 async function build(dir) {
     if (isBuilding) return;
@@ -16,9 +22,9 @@ async function build(dir) {
 
     const t1 = Date.now();
 
-    fs.copyFile('frontend/index.html', path.join(dir, 'index.html'), (err) => {
-        if (err) throw err;
-    });
+    copyFile('index.html', 'frontend', dir);
+    copyFile('manifest.webmanifest', 'frontend', dir);
+    copyFile('service-worker.js', 'frontend', dir)
 
     await esbuild.build({
         target: "es2016",

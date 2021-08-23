@@ -13,7 +13,7 @@
     "start": "concurrently \"npm:frontend\" \"npm:backend\" -k --kill-others-on-fail -p \"{name}|\" -n \"FE,BE\" -c \"blue,green\"",
     "frontend": "node esbuild.serve.js",
     "backend": "nodemon",
-    "build:frontend": "node esbuild.build.js frontend",
+    "build:frontend": "node esbuild.build.js frontend && workbox generateSW workbox-config.js",
     "build:backend": "node esbuild.build.js backend",
     "kill-all-node": "taskkill /F /IM node.exe"
   },

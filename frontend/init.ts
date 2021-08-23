@@ -1,5 +1,9 @@
 (window as any).log = console.log;
 
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () =>
+    navigator.serviceWorker.register('/service-worker.js'));
+}
 
 if (env === 'dev') setTimeout(() => {
     const { port } = location
