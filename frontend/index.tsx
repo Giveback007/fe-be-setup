@@ -1,11 +1,10 @@
 import './index.sass';
-
 import './init';
 
 const root = document.getElementById('root') as HTMLElement;
-root.innerHTML = 'Looking for server...'
+root.innerHTML = 'Looking for server...';
 
-console.log('environment:', env)
+console.log('environment:', env);
 async function data() {
     try {
         const ac = new AbortController();
@@ -22,7 +21,7 @@ async function run() {
     const x = await data();
 
     root.innerHTML = `
-        <h1>Frontend: IT WORKS!</h1>
+        <h1>Frontend: IT WORKS!!</h1>
         <h2>Backend: ${x === 'it works' ? x : '?'}</h2>
     `;
 }

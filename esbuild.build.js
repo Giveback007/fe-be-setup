@@ -1,48 +1,32 @@
 const esbuild = require('esbuild');
-const fs = require('fs');
-const path = require('path');
+const { copy, remove, mkdir } = require('fs-extra');
+const { join } = require('path');
 const sassPlugin = require('esbuild-plugin-sass');
 const { log } = console;
 
-const copyFile = (file, fromDir, toDir) => fs.copyFile(
-    path.join(fromDir, file),
-    path.join(toDir, file),
-    (err) => { if (err) throw err; },
-);
-
-async function build(type, dir) {
+async function build(type, toDir) {
     const t1 = Date.now();
-    log(`🏗️  Building ${type}... 🔨 to '${path.join(dir)}'`);
+    log(`🏗️  Building ${type}... 🔨 to '${join(toDir)}'`);
 
     // ### Clean previous build files
-    if (!fs.existsSync(dir))
-        fs.mkdirSync(dir, { recursive: true });
-
-    fs.readdir(dir, (err, files) => {
-        if (err) throw err;
-      
-        for (const file of files) {
-          fs.unlink(path.join(dir, file), err => {
-            if (err) throw err;
-          });
-        }
-    });
+    await remove(toDir);
+    await mkdir(toDir);
 
     // FRONTEND //
     if (type === 'frontend') {
-        copyFile('index.html', 'frontend', dir);
-        copyFile('manifest.webmanifest', 'frontend', dir);
-        copyFile('service-worker.js', 'frontend', dir)
+        ['index.html', 'public'].forEach((file) => {
+            copy(join('frontend', file), join(toDir, file))
+        });
 
         await esbuild.build({
-            target: "es2016",
+            target: "es2015",
             incremental: false,
             entryPoints: ['frontend/index.tsx'],
             define: {
                 "global": "window",
                 "env": '"prod"'
             },
-            outfile: path.join(dir, 'index.js'),
+            outfile: join(toDir, 'index.js'),
             bundle: true,
             minify: true,
             sourcemap: false,
@@ -63,7 +47,7 @@ async function build(type, dir) {
     if (type === 'backend') {
         await esbuild.build({
             entryPoints: ['backend/server.ts'],
-            outfile: path.join(dir, 'server.js'),
+            outfile: join(toDir, 'server.js'),
             target: 'node14',
             platform: 'node',
             bundle: false,

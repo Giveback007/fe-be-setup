@@ -1,9 +1,14 @@
 (window as any).log = console.log;
 
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () =>
-    navigator.serviceWorker.register('/service-worker.js'));
-}
+if ("serviceWorker" in navigator) addEventListener('load', async (e) => {
+  // new PWAConfApp();
+  
+  if ('serviceWorker' in navigator) { 
+    navigator.serviceWorker
+      .register("/public/sw.js")
+      .catch((err) => console.log("Service worker registration failed", err));
+  }
+});
 
 if (env === 'dev') setTimeout(() => {
     const { port } = location

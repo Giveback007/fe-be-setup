@@ -3,6 +3,7 @@
         "buckleup",
         "dataurl",
         "esbuild",
+        "outfile",
         "postbuild",
         "taskkill"
     ]
