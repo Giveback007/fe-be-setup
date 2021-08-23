@@ -5,9 +5,8 @@ const sassPlugin = require('esbuild-plugin-sass');
 const { log } = console;
 
 async function build(type, dir) {
-    log(type, dir)
-    log('🏗️  Building...🔨');
     const t1 = Date.now();
+    log(`🏗️  Building ${type}... 🔨 to '${path.join(dir)}'`);
 
     // ### Clean previous build files
     if (!fs.existsSync(dir))

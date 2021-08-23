@@ -1,27 +1,13 @@
 {
-    "configurations": [
-        {
-            "name": "Launch Chrome",
-            "request": "launch",
-            "type": "pwa-chrome",
-            "url": "http://localhost:3000",
-            "sourceMaps": true,
-            "smartStep": true,
-            "webRoot": "${workspaceFolder}/src"
-        },
-        {
-            "name": "Debug with esbuild-runner",
-            "request": "launch",
-            "type": "pwa-node",
-            "program": "${workspaceFolder}/backend/server.ts",
-            "runtimeArgs": [
-              "-r",
-              "esbuild-runner/register"
-            ],
-            "sourceMaps": true,
-            "skipFiles": [
-              "<node_internals>/**"
-            ],
-        }
-    ]
+  "configurations": [
+    {
+      "name": "Launch Chrome",
+      "request": "launch",
+      "type": "pwa-chrome",
+      "url": "http://localhost:3000",
+      "sourceMaps": true,
+      "smartStep": true,
+      "webRoot": "${workspaceFolder}/frontend"
+    }
+  ]
 }

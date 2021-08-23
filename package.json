@@ -14,7 +14,8 @@
     "frontend": "node esbuild.serve.js",
     "backend": "nodemon",
     "build:frontend": "node esbuild.build.js frontend",
-    "build:backend": "node esbuild.build.js backend"
+    "build:backend": "node esbuild.build.js backend",
+    "kill-all-node": "taskkill /F /IM node.exe"
   },
   "devDependencies": {
     "@types/browser-sync": "^2.26.2",

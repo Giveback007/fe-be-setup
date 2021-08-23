@@ -5,6 +5,7 @@
 		"syler.sass-indented",
         "pkief.material-icon-theme",
 		"tamasfe.even-better-toml",
-		"irongeek.vscode-env"
+		"irongeek.vscode-env",
+		"ms-vscode.node-debug2"
 	]
 }
