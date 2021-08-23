@@ -1,39 +1,42 @@
 /* For FrontEnd Localhost Development */
-
-const historyApiFallback = require('connect-history-api-fallback');
-const { copy, remove, mkdir } = require('fs-extra');
-const { join, resolve } = require('path');
-const esbuild = require('esbuild');
-const bs = require("browser-sync").create();
-const sassPlugin = require('esbuild-plugin-sass');
+import historyApiFallback from 'connect-history-api-fallback';
+import { copy, remove, mkdir } from 'fs-extra';
+import { join } from 'path';
+import esbuild = require('esbuild');
+import sassPlugin = require('esbuild-plugin-sass');
+import htmlPlugin from '@chialab/esbuild-plugin-html';
+const browserSync = require("browser-sync");
 
 const { log } = console;
-const wait = (ms) => new Promise((res) => setTimeout(() => res(), ms));
 
-let timeoutId;
-let resolver;
-let isBuilding;
-let whenDoneBuild = new Promise(r => r());
-async function build(toDir) {
+// https://www.npmjs.com/package/@chialab/esbuild-plugin-html
+
+let timeoutId: NodeJS.Timeout;
+let resolver: (x: unknown) => void;
+let isBuilding: boolean;
+let whenDoneBuild = new Promise(r => r(void(0)));
+async function build(toDir: string) {
     clearTimeout(timeoutId);
     if (!isBuilding) whenDoneBuild = new Promise(r => resolver = r)
     isBuilding = true;
-    
+
     return new Promise((debounceDone) => timeoutId = setTimeout(async () => {
         const t1 = Date.now();
 
         await esbuild.build({
             target: "es2015",
+            platform: 'browser',
+            entryPoints: ['frontend/index.html'],
             incremental: true,
-            entryPoints: ['frontend/index.tsx'],
+            // entryPoints: ['frontend/index.tsx'],
             define: {
                 "global": "window",
                 "env": '"dev"'
             },
-            outfile: join(toDir, 'index.js'),
+            outfile: join(toDir, 'index.html'),
             bundle: true,
             sourcemap: 'inline',
-            plugins: [sassPlugin()],
+            plugins: [sassPlugin(), htmlPlugin()],
             loader: {
                 '.png': 'file',
                 '.svg': 'file',
@@ -46,20 +49,22 @@ async function build(toDir) {
         });
         
         isBuilding = true;
-        resolver();
-        debounceDone();
+        resolver(void(0));
+        debounceDone(void(0));
 
         const t2 = Date.now();
         log(`⚡ Built in ${t2 - t1}ms`);
     }, 250));
 }
 
-async function serve(toDir) {
+async function serve(toDir: string) {
     log('STARTING...');
 
     // ### Clean previous build files
     await remove(toDir);
     await mkdir(toDir);
+
+    const bs = browserSync.create();
 
     bs.init({
         server: {
@@ -79,7 +84,7 @@ async function serve(toDir) {
         'frontend/**/*.sass',
         'frontend/**/*.scss',
         'frontend/**/*.css',
-    ], async (event, file) => build(toDir));
+    ], async () => build(toDir));
     
     // RELOAD WATCHERS //
 

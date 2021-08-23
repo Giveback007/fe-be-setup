@@ -11,16 +11,18 @@
   ],
   "scripts": {
     "start": "concurrently \"npm:frontend\" \"npm:backend\" -k --kill-others-on-fail -p \"{name}|\" -n \"FE,BE\" -c \"blue,green\"",
-    "frontend": "node esbuild.serve.js",
+    "frontend": "node -r esbuild-register esbuild.serve.ts",
     "backend": "nodemon",
-    "build:frontend": "node esbuild.build.js frontend && workbox generateSW workbox-config.js",
-    "build:backend": "node esbuild.build.js backend",
+    "build:frontend": "node -r esbuild-register esbuild.build.ts frontend && workbox generateSW workbox-config.js",
+    "build:backend": "node -r esbuild-register esbuild.build.ts backend",
     "kill-all-node": "taskkill /F /IM node.exe"
   },
   "devDependencies": {
+    "@chialab/esbuild-plugin-html": "0.11.0",
     "@types/browser-sync": "^2.26.2",
+    "@types/connect-history-api-fallback": "^1.3.5",
     "@types/fs-extra": "^9.0.12",
-    "browser-sync": "^2.27.4",
+    "browser-sync": "^2.27.5",
     "concurrently": "^6.2.1",
     "esbuild": "^0.12.22",
     "esbuild-plugin-sass": "^0.6.0",

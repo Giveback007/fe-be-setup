@@ -11,10 +11,12 @@ if ("serviceWorker" in navigator) addEventListener('load', async (e) => {
 });
 
 if (env === 'dev') setTimeout(() => {
-    const { port } = location
-    const src = `http://localhost:${port}/browser-sync/browser-sync-client.js?v=2.27.4`;
+    const src = '/browser-sync/browser-sync-client.js';
 
-    if (!document.querySelector('script[src="' + src + '"]')) {
+    const hasBS = Array.from(document.querySelectorAll('script'))
+      .find((x) => x.src.search(src) > -1)
+
+    if (!hasBS) {
       const browserSyncScript = document.createElement('script');
       browserSyncScript.src = src;
       document.body.appendChild(browserSyncScript);

@@ -1,4 +1,3 @@
-import './index.sass';
 import './init';
 
 const root = document.getElementById('root') as HTMLElement;

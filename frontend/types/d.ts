@@ -22,6 +22,9 @@ declare module "eruda" {
     }) => any;
 }
 
-const log = console.log;
+
+interface Window { 
+    log: typeof console['log'];
+}
 
 declare const env: 'dev' | 'prod';
