@@ -5,6 +5,7 @@ import { join } from 'path';
 const sassPlugin = require('esbuild-plugin-sass');
 const { log } = console;
 
+// https://github.com/onderceylan/pwa-asset-generator
 async function pwaAssets() {
     // apple splash screens
     await pwaAssetGenerator.generateImages(
@@ -16,6 +17,7 @@ async function pwaAssets() {
             opaque: true,
             splashOnly: true,
             log: true,
+            noSandbox: true,
             manifest: 'dist/manifest.webmanifest',
             index: 'dist/index.html'
         }
@@ -34,6 +36,7 @@ async function pwaAssets() {
             manifest: 'dist/manifest.webmanifest',
             index: 'dist/index.html',
             favicon: true,
+            noSandbox: true,
             maskable: true,
         }
     );
