@@ -2,7 +2,6 @@
 import historyApiFallback from 'connect-history-api-fallback';
 import { copy, remove, mkdir } from 'fs-extra';
 import { join } from 'path';
-import fs from 'fs';
 import esbuild = require('esbuild');
 import sassPlugin = require('esbuild-plugin-sass');
 const browserSync = require("browser-sync");
@@ -62,7 +61,7 @@ async function serve(toDir: string) {
     // ### Clean previous build files
     await remove(toDir);
     await mkdir(toDir);
-    await copy('frontend/_pwa', join(toDir));
+    await copy('frontend/_pwa', join(toDir, 'public'));
 
     const bs = browserSync.create();
 

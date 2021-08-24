@@ -2,22 +2,10 @@
 
 import 'index.sass';
 
-if ("serviceWorker" in navigator) addEventListener('load', async (e) => {
-  // new PWAConfApp();
-  
-  if ('serviceWorker' in navigator) { 
+if (env === 'prod' && "serviceWorker" in navigator) addEventListener('load', () => {
     navigator.serviceWorker
-      .register("/public/service-worker.js/")
+      .register("/public/sw.js")
       .catch((err) => console.log("Service worker registration failed", err));
-  }
-
-  if ('serviceWorker' in navigator && process.env.NODE_ENV !== 'production') {
-    addEventListener('load', function () {
-      navigator.serviceWorker.register(swPath).then(registration => {
-        console.log('Service worker registered');
-      });
-    });
-  }
 });
 
 if (env === 'dev') setTimeout(() => {

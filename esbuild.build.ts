@@ -14,7 +14,7 @@ async function build(type: 'frontend' | 'backend', toDir: string) {
 
     // FRONTEND //
     if (type === 'frontend') {
-        await copy('frontend/_pwa', join(toDir));
+        await copy('frontend/_pwa', join(toDir, 'public'));
         await copy(join('frontend', 'index.html'), join(toDir, 'index.html'));
 
         await esbuild.build({
@@ -29,6 +29,7 @@ async function build(type: 'frontend' | 'backend', toDir: string) {
             outdir: join(toDir),
             bundle: true,
             minify: true,
+            // splitting: true, // https://esbuild.github.io/api/#splitting
             plugins: [sassPlugin()],
             loader: {
                 '.png': 'file',
