@@ -1,17 +1,11 @@
 # https://docs.netlify.com/configure-builds/file-based-configuration/
 # https://docs.netlify.com/configure-builds/environment-variables/
+# https://app.netlify.com/plugins
 
 # [[headers]]
 #   for = "/*"
 #     [headers.values]
 #     Access-Control-Allow-Origin = "*"
-
-# https://app.netlify.com/plugins
-[[plugins]]
-  package = "netlify-plugin-chromium"
-
-[[plugins]]
-  package = "netlify-plugin-image-optim"
 
 [context.deployment]
   publish = "dist/"

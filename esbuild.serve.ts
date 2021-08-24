@@ -16,7 +16,7 @@ let isBuilding: boolean;
 let whenDoneBuild = new Promise(r => r(void(0)));
 async function build(toDir: string) {
     clearTimeout(timeoutId);
-    if (!isBuilding) whenDoneBuild = new Promise(r => resolver = r)
+    if (!isBuilding) whenDoneBuild = new Promise(r => resolver = r);
     isBuilding = true;
 
     return new Promise((debounceDone) => timeoutId = setTimeout(async () => {
@@ -61,7 +61,8 @@ async function serve(toDir: string) {
     // ### Clean previous build files
     await remove(toDir);
     await mkdir(toDir);
-    await copy('frontend/_pwa', join(toDir, 'public'));
+    await copy('frontend/public/icons', join(toDir, 'public'));
+    await copy('frontend/manifest.webmanifest', join(toDir, 'manifest.webmanifest'));
 
     const bs = browserSync.create();
 
@@ -92,7 +93,7 @@ async function serve(toDir: string) {
     bs.watch([ // HTML //
         'frontend/**/*.html'
     ], async () => {
-        await copy(join('frontend', 'index.html'), join(toDir, 'index.html'));
+        await copy('frontend/index.html', join(toDir, 'index.html'));
         bs.reload("*.html");
     });
 
