@@ -1,11 +1,16 @@
-// workbox-config.js
+// https://developers.google.com/web/tools/workbox/reference-docs/latest/module-workbox-build#.generateSW
 module.exports = {
-  globDirectory: "dist",
-  globPatterns: [
-    "**/*.{html,js,css,png,svg,jpg,gif,json,woff,woff2,eot,ico,webmanifest,map}"
+  "globDirectory": "dist/",
+  "globPatterns": [
+    "**/*.{html,js,css,png,jpg,jpeg,svg,gif,ico,json,woff,woff2,eot,webmanifest,map}"
   ],
-  swDest: "dist/service-worker.js",
-  clientsClaim: true,
+  "swDest": "dist/sw.js",
+  "maximumFileSizeToCacheInBytes": 10000000,
+  runtimeCaching: [{
+    urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
+    handler: 'cacheFirst',
+    options: { cacheName: "images" }
+  }],
   skipWaiting: true,
-  "maximumFileSizeToCacheInBytes": 10000000
+  // navigateFallback
 };

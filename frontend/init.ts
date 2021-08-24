@@ -4,7 +4,7 @@ import 'index.sass';
 
 if (env === 'prod' && "serviceWorker" in navigator) addEventListener('load', () => {
     navigator.serviceWorker
-      .register("/public/sw.js")
+      .register("/sw.js")
       .catch((err) => console.log("Service worker registration failed", err));
 });
 
