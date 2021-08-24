@@ -6,6 +6,13 @@
     [headers.values]
     Access-Control-Allow-Origin = "*"
 
+# https://app.netlify.com/plugins
+[[plugins]]
+  package = "netlify-plugin-chromium"
+
+[[plugins]]
+  package = "netlify-plugin-image-optim"
+
 [context.deployment]
   publish = "dist/"
   command = "yarn run build:frontend"
