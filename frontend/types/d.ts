@@ -28,4 +28,3 @@ interface Window {
 }
 
 declare const env: 'dev' | 'prod';
-declare const NETLIFY: boolean;

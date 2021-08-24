@@ -8,10 +8,10 @@ const { log } = console;
 // favicon-cheat-sheet: https://github.com/audreyfeldroy/favicon-cheat-sheet
 // pwaAssetGenerator: https://github.com/onderceylan/pwa-asset-generator
 async function pwaAssets() {
-    if (NETLIFY) {
+    if (process.env.NETLIFY) {
         log('running netlify!');
     }
-    
+
     // apple splash screens
     await pwaAssetGenerator.generateImages(
         "./frontend/assets/squarelogo.png",
@@ -22,7 +22,7 @@ async function pwaAssets() {
             opaque: true,
             splashOnly: true,
             log: true,
-            // noSandbox: true,
+            noSandbox: true,
             manifest: 'dist/manifest.webmanifest',
             index: 'dist/index.html'
         }
@@ -41,7 +41,7 @@ async function pwaAssets() {
             manifest: 'dist/manifest.webmanifest',
             index: 'dist/index.html',
             favicon: true,
-            // noSandbox: true,
+            noSandbox: true,
             maskable: true,
         }
     );
