@@ -8,7 +8,7 @@ module.exports = {
   "maximumFileSizeToCacheInBytes": 10000000,
   runtimeCaching: [{
     urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
-    handler: 'cacheFirst',
+    handler: 'CacheFirst',
     options: { cacheName: "images" }
   }],
   skipWaiting: true,
