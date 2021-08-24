@@ -1,8 +1,7 @@
 import esbuild = require('esbuild');
-const { remove, mkdir } = require('fs-extra');
+import { remove, mkdir, copy } from 'fs-extra';
 const { join } = require('path');
 const sassPlugin = require('esbuild-plugin-sass');
-import htmlPlugin from '@chialab/esbuild-plugin-html';
 const { log } = console;
 
 async function build(type: 'frontend' | 'backend', toDir: string) {
@@ -15,28 +14,22 @@ async function build(type: 'frontend' | 'backend', toDir: string) {
 
     // FRONTEND //
     if (type === 'frontend') {
-        // copy('frontend/index.html', join(toDir, 'index.html'));
-        // copy('frontend/_pwa', join(toDir))
-        // ['index.html', 'public'].forEach((file) => {
-        //     copy(join('frontend', file), join(toDir, file))
-        // });
+        await copy('frontend/_pwa', join(toDir));
+        await copy(join('frontend', 'index.html'), join(toDir, 'index.html'));
 
         await esbuild.build({
             target: "es2015",
             incremental: false,
             platform: 'browser',
-            entryPoints: ['frontend/index.html'],
-            assetNames: '[dir]/[name].[hash]',
-            chunkNames: '[dir]/[name].[hash]',
-            entryNames: '[dir]/[name].[hash]',
+            entryPoints: ['frontend/index.tsx'],
             define: {
                 "global": "window",
                 "env": '"prod"'
             },
-            outfile: join(toDir, 'index.js'),
+            outdir: join(toDir),
             bundle: true,
             minify: true,
-            plugins: [sassPlugin(), htmlPlugin()],
+            plugins: [sassPlugin()],
             loader: {
                 '.png': 'file',
                 '.svg': 'file',
@@ -45,10 +38,8 @@ async function build(type: 'frontend' | 'backend', toDir: string) {
                 '.ttf': 'text',
                 '.eot': 'text',
                 '.mp3': 'file'
-            },
-        });
-
-
+            }
+        })
     }
 
     // BACKEND //
@@ -68,9 +59,10 @@ async function build(type: 'frontend' | 'backend', toDir: string) {
 }
 
 const [type] = process.argv.slice(2);
-build(type as 'frontend' | 'backend', './dist')
-.then(() => process.exit())
-.catch((e) => {
-    log(e);
-    process.exit(1);
-});
+if (type === 'frontend' || type === 'backend')
+    build(type, './dist')
+    .then(() => process.exit())
+    .catch((e) => {
+        log(e);
+        process.exit(1);
+    });

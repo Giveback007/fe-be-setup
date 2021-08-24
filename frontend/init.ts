@@ -1,12 +1,22 @@
 (window as any).log = console.log;
 
+import 'index.sass';
+
 if ("serviceWorker" in navigator) addEventListener('load', async (e) => {
   // new PWAConfApp();
   
   if ('serviceWorker' in navigator) { 
     navigator.serviceWorker
-      .register("/public/sw.js")
+      .register("/public/service-worker.js/")
       .catch((err) => console.log("Service worker registration failed", err));
+  }
+
+  if ('serviceWorker' in navigator && process.env.NODE_ENV !== 'production') {
+    addEventListener('load', function () {
+      navigator.serviceWorker.register(swPath).then(registration => {
+        console.log('Service worker registered');
+      });
+    });
   }
 });
 

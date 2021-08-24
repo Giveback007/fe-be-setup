@@ -2,9 +2,9 @@
 import historyApiFallback from 'connect-history-api-fallback';
 import { copy, remove, mkdir } from 'fs-extra';
 import { join } from 'path';
+import fs from 'fs';
 import esbuild = require('esbuild');
 import sassPlugin = require('esbuild-plugin-sass');
-import htmlPlugin from '@chialab/esbuild-plugin-html';
 const browserSync = require("browser-sync");
 
 const { log } = console;
@@ -26,17 +26,16 @@ async function build(toDir: string) {
         await esbuild.build({
             target: "es2015",
             platform: 'browser',
-            entryPoints: ['frontend/index.html'],
+            entryPoints: ['frontend/index.tsx'],
             incremental: true,
-            // entryPoints: ['frontend/index.tsx'],
             define: {
                 "global": "window",
                 "env": '"dev"'
             },
-            outfile: join(toDir, 'index.html'),
+            outdir: join(toDir),
             bundle: true,
             sourcemap: 'inline',
-            plugins: [sassPlugin(), htmlPlugin()],
+            plugins: [sassPlugin()],
             loader: {
                 '.png': 'file',
                 '.svg': 'file',
@@ -46,7 +45,7 @@ async function build(toDir: string) {
                 '.eot': 'text',
                 '.mp3': 'file'
             }
-        });
+        })
         
         isBuilding = true;
         resolver(void(0));
@@ -63,6 +62,7 @@ async function serve(toDir: string) {
     // ### Clean previous build files
     await remove(toDir);
     await mkdir(toDir);
+    await copy('frontend/_pwa', join(toDir));
 
     const bs = browserSync.create();
 
@@ -84,7 +84,9 @@ async function serve(toDir: string) {
         'frontend/**/*.sass',
         'frontend/**/*.scss',
         'frontend/**/*.css',
-    ], async () => build(toDir));
+    ], async () => {
+        build(toDir)
+    });
     
     // RELOAD WATCHERS //
 
