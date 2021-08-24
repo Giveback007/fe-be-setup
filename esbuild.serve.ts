@@ -2,22 +2,17 @@
 import historyApiFallback from 'connect-history-api-fallback';
 import { copy, remove, mkdir } from 'fs-extra';
 import { join } from 'path';
-import esbuild = require('esbuild');
+import esbuild from 'esbuild';
 import sassPlugin = require('esbuild-plugin-sass');
-const browserSync = require("browser-sync");
+import browserSync from "browser-sync";
 
 const { log } = console;
 
 // https://www.npmjs.com/package/@chialab/esbuild-plugin-html
 
 let timeoutId: NodeJS.Timeout;
-let resolver: (x: unknown) => void;
-let isBuilding: boolean;
-let whenDoneBuild = new Promise(r => r(void(0)));
 async function build(toDir: string) {
     clearTimeout(timeoutId);
-    if (!isBuilding) whenDoneBuild = new Promise(r => resolver = r);
-    isBuilding = true;
 
     return new Promise((debounceDone) => timeoutId = setTimeout(async () => {
         const t1 = Date.now();
@@ -27,6 +22,7 @@ async function build(toDir: string) {
             platform: 'browser',
             entryPoints: ['frontend/index.tsx'],
             incremental: true,
+            watch: true,
             define: {
                 "global": "window",
                 "env": '"dev"'
@@ -44,10 +40,8 @@ async function build(toDir: string) {
                 '.eot': 'text',
                 '.mp3': 'file'
             }
-        })
+        });
         
-        isBuilding = true;
-        resolver(void(0));
         debounceDone(void(0));
 
         const t2 = Date.now();
@@ -57,24 +51,24 @@ async function build(toDir: string) {
 
 async function serve(toDir: string) {
     log('STARTING...');
+    const bs = browserSync.create();
 
     // ### Clean previous build files
     await remove(toDir);
     await mkdir(toDir);
-    await copy('frontend/public/icons', join(toDir, 'public'));
+    await copy('frontend/public', join(toDir, 'public'));
     await copy('frontend/manifest.webmanifest', join(toDir, 'manifest.webmanifest'));
 
-    const bs = browserSync.create();
-
     bs.init({
-        server: {
-            baseDir: join(toDir),
-            middleware: [ historyApiFallback() ],
-            reloadDelay: 500,
-            reloadDebounce: 2000,
-            reloadOnRestart: true
-      }
+        server: toDir,
+        watch: true,
+        middleware: [ historyApiFallback() as any ],
+        reloadDelay: 0,
+        reloadDebounce: 250,
+        reloadOnRestart: true
     });
+
+    await copy('frontend/index.html', join(toDir, 'index.html'));
 
     // BUILD WATCHER //
     bs.watch([
@@ -84,36 +78,10 @@ async function serve(toDir: string) {
         'frontend/**/*.sass',
         'frontend/**/*.scss',
         'frontend/**/*.css',
-    ], async () => {
-        build(toDir)
-    });
-    
-    // RELOAD WATCHERS //
+    ] as any, {}, () => build(toDir));
 
-    bs.watch([ // HTML //
-        'frontend/**/*.html'
-    ], async () => {
-        await copy('frontend/index.html', join(toDir, 'index.html'));
-        bs.reload("*.html");
-    });
-
-    bs.watch([ // TS|JS //
-        'frontend/**/*.tsx',
-        'frontend/**/*.ts',
-        'frontend/**/*.js'
-    ], async () => {
-        await whenDoneBuild;
-        bs.reload("*.html");
-    });
-
-    bs.watch([ // CSS //
-        'frontend/**/*.sass',
-        'frontend/**/*.scss',
-        'frontend/**/*.css',
-    ], async () => {
-        await whenDoneBuild;
-        bs.reload("*.css")
-    });
+    bs.watch('frontend/**/*.html', {}, () =>
+        copy('frontend/index.html', join(toDir, 'index.html')));
 }
 
 serve('.cache').catch((e) => {

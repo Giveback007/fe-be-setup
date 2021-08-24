@@ -17,7 +17,7 @@ async function pwaAssets(toDir: string) {
             opaque: true,
             splashOnly: true,
             manifest: 'frontend/manifest.webmanifest',
-            pathOverride: 'public'
+            pathOverride: 'public/icons'
         }
         
     );
@@ -27,17 +27,21 @@ async function pwaAssets(toDir: string) {
         "./frontend/assets/squarelogo.png", toDir,
         {
             scrape: true,
-            opaque: true,
+            opaque: false,
             padding: '0%',
             iconOnly: true,
             manifest: 'frontend/manifest.webmanifest',
             favicon: true,
             maskable: true,
-            pathOverride: 'public'
+            pathOverride: 'public/icons'
         }
     );
 
-    const htmlMeta = { ...splash.htmlMeta, ...icons.htmlMeta};
+    // console.log(icons.htmlMeta);
+
+    const htmlMeta = { 
+        ...splash.htmlMeta, 
+        ...icons.htmlMeta};
     const html = await readFile('./frontend/index.html', 'utf8')
     const search = '<!-- {{{ICONS}}} -->';
 
@@ -45,7 +49,8 @@ async function pwaAssets(toDir: string) {
     const idx_2 = html.indexOf(search, idx_1);
     
     let metaStr = '';
-    Object.values(htmlMeta).forEach(x => metaStr += x)
+    Object.values(htmlMeta).forEach(x => metaStr += x);
+    metaStr = metaStr.replace('/icons/favicon-196.jpg', '/icons/favicon-196.png');
     
     const newHtml = html.substr(0, idx_1) + '\n' + metaStr + html.substr(idx_2);
     await writeFile('./frontend/index.html', newHtml);
@@ -117,7 +122,7 @@ if (type && toDir) (async () => {
             process.exit(1);
         });
     
-    if (type === 'logos')
+    if (type === 'icons')
         await pwaAssets(toDir).catch((e) => {
             log(e);
             process.exit(1);

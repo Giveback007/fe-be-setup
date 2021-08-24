@@ -15,7 +15,7 @@
     "backend": "nodemon",
     "build:frontend": "node -r esbuild-register esbuild.build.ts frontend dist && workbox generateSW workbox-config.js",
     "build:backend": "node -r esbuild-register esbuild.build.ts backend dist",
-    "build:logos": "node -r esbuild-register esbuild.build.ts logos frontend/public/icons",
+    "build:icons": "node -r esbuild-register esbuild.build.ts icons frontend/public/icons",
     "kill-all-node": "taskkill /F /IM node.exe"
   },
   "devDependencies": {
