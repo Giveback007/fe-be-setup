@@ -1,0 +1,13 @@
+{
+    "short_name": "BuckleUp",
+    "name": "BuckleUp",
+    "start_url": ".",
+    "display": "standalone",
+    "theme_color": "#000000",
+    "background_color": "#ffffff",
+    "description": "Next Generation Medical Communications",
+    "lang": "en-US",
+    "permissions": [
+        "storage"
+    ]
+}
